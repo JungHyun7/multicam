@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>
+        Second Page
+    </h1>
+    <p>
+        해당 페이지는 /second주소로 요청이 들어왔을 때 보여지는 페이지입니다.
+    </p>
+    <!-- table 구조
+    <tr> -> 행을 생성
+            <th>, <td>를 이용하여 열을 생성
+    -->
+    <table border=1>
+        <!-- 열에 대입이 되는 데이터는 table_data 변수 -->
+        <tr>
+            <!-- 컬럼의 이름을 대입 -->
+            {%for col in cols %}
+                <th>{{col}}</th>
+            <!-- 반복문을 종료 -->
+            {%endfor%}
+        </tr>
+        <!-- 반복문이 시작 -->
+        {% for data in table_data %}
+        <tr>
+            <!-- cols를 이용하여 반복문을 생성 -->
+            {% for col in cols %}
+            <!-- table_data의 첫번째 원소의 값들 -->
+            <!-- <td>{{data['DEPTNO']}}</td>
+            <td>{{data['DNAME']}}</td>
+            <td>{{data['LOC']}}</td> -->
+                <td>{{data[col]}}</td>
+                <!-- 반복문 종료-->
+            {% endfor %}
+        </tr>
+        <!-- 반복문이 종료 -->
+        {% endfor %}
+    </table>
+
+    <!-- 실제 그래프를 그리는 영역 -->
+    <div>
+        <canvas id="myChart"></canvas>
+    </div>
+
+    <!-- 그래프를 그리는 기능을 가진 JS 라이브러리 로드 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- 그래프를 그려주는 부분 -->
+    <script>
+        // id가 myChart 태그를 선택
+        const ctx = document.getElementById('myChart');
+
+        // myChart라는 태그에 그래프를 그린다.
+        new Chart(ctx, {
+            // 그래프의 종류를 선택
+            type: 'line',
+            // 그래프의 x축과 y축 데이터가 입력되는 부분
+            data: {
+                // labels -> x축의 데이터
+                labels: {{x_data | tojson}}, //-> 오류가 나오지만 돌아가는데 괜찮음
+                // databases -> y축의 데이터
+                datasets: [
+                    // dict 데이터가 y축의 데이터 하나를 의미
+                    {
+                        // label -> y축 데이터의 설명 (범례)
+                        label: '# of Votes',
+                        // data -> 실제 y축의 데이터
+                        data: {{y_data | tojson}}
+                    }
+                ]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
